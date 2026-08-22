@@ -87,6 +87,22 @@
                                 title="Instagram"><i class="ph ph-instagram-logo"></i></a>
                         </div>
                     </div>
+
+                    <!-- Quick Stats Strip -->
+                    <div class="hero-stats">
+                        <div class="stat-item">
+                            <span class="stat-number">1+</span>
+                            <span class="stat-label">Tahun Dedikasi IT & QA</span>
+                        </div>
+                        <div class="stat-item">
+                            <span class="stat-number">6+</span>
+                            <span class="stat-label">Proyek & Ekosistem Teruji</span>
+                        </div>
+                        <div class="stat-item">
+                            <span class="stat-number">100%</span>
+                            <span class="stat-label">Fokus Mutu & UAT Pass</span>
+                        </div>
+                    </div>
                 </div>
                 <div class="hero-image">
                     <div class="profile-frame">
@@ -290,43 +306,67 @@
 
         <!-- Penghargaan / Proyek -->
         <section id="awards" class="awards section-padding fade-in-up">
-            <h3 class="section-title">Portofolio & Kontribusi</h3>
+            <div class="section-header-flex">
+                <h3 class="section-title" style="margin-bottom: 0;">Portofolio & Kontribusi</h3>
+                <!-- Portfolio Filter -->
+                <div class="project-filters">
+                    <button class="filter-btn active" data-filter="all">Semua</button>
+                    <button class="filter-btn" data-filter="qa">QA & Testing</button>
+                    <button class="filter-btn" data-filter="support">IT Ops & L2</button>
+                    <button class="filter-btn" data-filter="dev">Development & Docs</button>
+                </div>
+            </div>
             <div class="projects-grid">
 
-                <div class="project-card glass-panel hover-lift">
+                <div class="project-card glass-panel hover-lift" data-category="qa">
                     <div class="project-header">
                         <div class="project-icon"><i class="ph ph-buildings"></i></div>
+                        <span class="project-badge">QA Testing</span>
                     </div>
                     <h4 class="project-title">QA Ekosistem Internal Advantage SCM</h4>
-                    <p style="color: var(--accent); font-size: 14.5px; margin-bottom: 20px; font-weight: 500;">Validasi
+                    <p style="color: var(--accent); font-size: 14.5px; margin-bottom: 15px; font-weight: 500;">Validasi
                         Komprehensif & Stabilisasi Alur Kerja Bisnis</p>
                     <p class="project-desc long-text" style="font-size: 15px;">Bertanggung jawab penuh atas pengujian
                         kualitas <em>end-to-end</em> pada seluruh infrastruktur aplikasi dan portal web internal
                         Advantage SCM. Menerapkan metodologi pengujian yang ketat untuk mengamankan integritas data,
                         memvalidasi stabilitas modul krusial, dan memastikan kontinuitas operasional <em>Supply Chain
                             Management</em> berjalan tanpa hambatan (<em>zero critical defect</em>).</p>
+                    <div class="project-tags">
+                        <span>Manual Testing</span>
+                        <span>End-to-End</span>
+                        <span>SQL Verification</span>
+                        <span>Defect Lifecycle</span>
+                    </div>
                 </div>
 
-                <div class="project-card glass-panel hover-lift">
+                <div class="project-card glass-panel hover-lift" data-category="qa">
                     <div class="project-header">
                         <div class="project-icon"><i class="ph ph-storefront"></i></div>
+                        <span class="project-badge">QA Testing</span>
                     </div>
                     <h4 class="project-title">QA Aplikasi Internal Butik Antam</h4>
-                    <p style="color: var(--accent); font-size: 14.5px; margin-bottom: 20px; font-weight: 500;">Audit
+                    <p style="color: var(--accent); font-size: 14.5px; margin-bottom: 15px; font-weight: 500;">Audit
                         Fungsionalitas & Keamanan Modul Transaksional</p>
                     <p class="project-desc long-text" style="font-size: 15px;">Mengawal standar mutu perangkat lunak
                         pada aplikasi operasional internal Butik Antam. Memfokuskan pengujian pada audit presisi alur
                         transaksi, sinkronisasi manajemen inventaris, serta validasi ketat terhadap kesesuaian sistem
                         dengan Prosedur Operasional Standar (SOP) ritel guna meminimalisir risiko finansial dan
                         operasional.</p>
+                    <div class="project-tags">
+                        <span>Transactional QA</span>
+                        <span>Inventory Audit</span>
+                        <span>SOP Compliance</span>
+                        <span>Risk Mitigation</span>
+                    </div>
                 </div>
 
-                <div class="project-card glass-panel hover-lift">
+                <div class="project-card glass-panel hover-lift" data-category="qa">
                     <div class="project-header">
                         <div class="project-icon"><i class="ph ph-barbell"></i></div>
+                        <span class="project-badge">QA Testing</span>
                     </div>
                     <h4 class="project-title">QA Aplikasi Klien Gym "Stronger Than Before"</h4>
-                    <p style="color: var(--accent); font-size: 14.5px; margin-bottom: 20px; font-weight: 500;">Pengujian
+                    <p style="color: var(--accent); font-size: 14.5px; margin-bottom: 15px; font-weight: 500;">Pengujian
                         <em>User Experience</em> & Rekomendasi Fitur
                     </p>
                     <p class="project-desc long-text" style="font-size: 15px;">Mengeksekusi pengujian aplikasi secara
@@ -334,41 +374,63 @@
                         (UX) dan <em>User Interface</em> (UI) yang optimal bagi keanggotaan gym. Secara proaktif
                         merumuskan wawasan strategis (<em>insight</em>) dan masukan berharga yang mendorong pembaruan
                         fitur (<em>feature enhancement</em>) pada iterasi pengembangan berikutnya.</p>
+                    <div class="project-tags">
+                        <span>UI/UX Testing</span>
+                        <span>Client-side QA</span>
+                        <span>Feature Feedback</span>
+                        <span>Usability</span>
+                    </div>
                 </div>
 
-                <div class="project-card glass-panel hover-lift">
+                <div class="project-card glass-panel hover-lift" data-category="qa">
                     <div class="project-header">
                         <div class="project-icon"><i class="ph ph-student"></i></div>
+                        <span class="project-badge">UAT & QA</span>
                     </div>
                     <h4 class="project-title">QA Aplikasi CBT SMKN 1 Jakarta</h4>
-                    <p style="color: var(--accent); font-size: 14.5px; margin-bottom: 20px; font-weight: 500;">Pengujian
+                    <p style="color: var(--accent); font-size: 14.5px; margin-bottom: 15px; font-weight: 500;">Pengujian
                         UAT & Validasi Konkurensi Sistem</p>
                     <p class="project-desc long-text" style="font-size: 15px;">Memimpin fase pengujian penerimaan
                         pengguna (<em>User Acceptance Testing</em>/UAT) untuk sistem ujian berbasis komputer (CBT)
                         berskala institusi. Memvalidasi kemampuan konkurensi (<em>concurrency handling</em>) guna
                         memastikan server aplikasi tetap stabil dan responsif saat diakses secara masif oleh ratusan
                         entitas siswa secara bersamaan (<em>live environment</em>).</p>
+                    <div class="project-tags">
+                        <span>UAT Lead</span>
+                        <span>Concurrency Test</span>
+                        <span>Live Test</span>
+                        <span>High-Load Support</span>
+                    </div>
                 </div>
 
-                <div class="project-card glass-panel hover-lift">
+                <div class="project-card glass-panel hover-lift" data-category="dev">
                     <div class="project-header">
                         <div class="project-icon"><i class="ph ph-chart-line-up"></i></div>
+                        <span class="project-badge">Dev & Docs</span>
                     </div>
                     <h4 class="project-title">Forex Intelligence Terminal & Sinyal Gandasuli</h4>
-                    <p style="color: var(--accent); font-size: 14.5px; margin-bottom: 20px; font-weight: 500;">
+                    <p style="color: var(--accent); font-size: 14.5px; margin-bottom: 15px; font-weight: 500;">
                         Platform Analitik Finansial, AI Scanner & Dokumentasi Sistem</p>
                     <p class="project-desc long-text" style="font-size: 15px;">Merancang dan mengembangkan platform terminal
                         analisis pasar forex dengan integrasi charting TradingView, kalkulator manajemen risiko, multi-timeframe
                         matrix, serta modul integrasi AI Assistant. Menyusun <em>User Guide</em> komprehensif dan FSD
                         untuk menjamin kemudahan adopsi pengguna serta keandalan operasional sistem.</p>
+                    <div class="project-tags">
+                        <span>Next.js</span>
+                        <span>TypeScript</span>
+                        <span>TradingView API</span>
+                        <span>AI Assistant</span>
+                        <span>User Manual Guide</span>
+                    </div>
                 </div>
 
-                <div class="project-card glass-panel hover-lift">
+                <div class="project-card glass-panel hover-lift" data-category="support">
                     <div class="project-header">
                         <div class="project-icon"><i class="ph ph-headset"></i></div>
+                        <span class="project-badge">IT Ops L2</span>
                     </div>
                     <h4 class="project-title">Helpdesk IT Support Ekosistem Advantage SCM</h4>
-                    <p style="color: var(--accent); font-size: 14.5px; margin-bottom: 20px; font-weight: 500;">Manajemen
+                    <p style="color: var(--accent); font-size: 14.5px; margin-bottom: 15px; font-weight: 500;">Manajemen
                         Insiden (<em>L2 Support</em>) & Pemulihan Layanan</p>
                     <p class="project-desc long-text" style="font-size: 15px;">Bertindak sebagai garda terdepan
                         (<em>Level 2 Support</em>) dalam mengelola seluruh insiden teknis yang dilaporkan pengguna
@@ -376,6 +438,12 @@
                             analysis</em>), verifikasi silang terhadap anomali basis data, hingga eksekusi pemulihan
                         layanan secara instan untuk menekan angka <em>downtime</em> produktivitas korporat ke tingkat
                         minimal.</p>
+                    <div class="project-tags">
+                        <span>L2 Escalation</span>
+                        <span>Root Cause Analysis</span>
+                        <span>Database Audit</span>
+                        <span>Incident Management</span>
+                    </div>
                 </div>
 
             </div>
@@ -427,10 +495,6 @@
             </p>
         </footer>
     </main>
-
-    <footer>
-        <p class="tech-stack">© 2026 • Muhammad Rezky</p>
-    </footer>
 
     <script src="script.js"></script>
 </body>

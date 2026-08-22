@@ -80,6 +80,28 @@ document.addEventListener('DOMContentLoaded', () => {
         observer.observe(el);
     });
 
+    // Portfolio Filter Logic
+    const filterBtns = document.querySelectorAll('.filter-btn');
+    const projectCards = document.querySelectorAll('.project-card');
+
+    filterBtns.forEach(btn => {
+        btn.addEventListener('click', () => {
+            filterBtns.forEach(b => b.classList.remove('active'));
+            btn.classList.add('active');
+
+            const filterValue = btn.getAttribute('data-filter');
+
+            projectCards.forEach(card => {
+                const cardCategory = card.getAttribute('data-category');
+                if (filterValue === 'all' || cardCategory === filterValue) {
+                    card.classList.remove('is-hidden');
+                } else {
+                    card.classList.add('is-hidden');
+                }
+            });
+        });
+    });
+
     // Initial Trigger for Hero Section
     setTimeout(() => {
         const hero = document.querySelector('.hero');
