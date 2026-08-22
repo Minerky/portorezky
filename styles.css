@@ -270,6 +270,20 @@ main {
     gap: 12px;
 }
 
+.btn-whatsapp {
+    background-color: rgba(37, 211, 102, 0.15);
+    color: #25D366;
+    border: 1px solid rgba(37, 211, 102, 0.4);
+    box-shadow: 0 0 20px rgba(37, 211, 102, 0.15);
+}
+
+.btn-whatsapp:hover {
+    background-color: #25D366;
+    color: #050810;
+    box-shadow: 0 0 30px rgba(37, 211, 102, 0.4);
+    transform: translateY(-2px);
+}
+
 /* Social Icons & Hero Layout Additions */
 .hero-cta {
     display: flex;
@@ -1030,7 +1044,129 @@ footer {
     box-shadow: 0 5px 15px var(--accent-tint);
 }
 
-.skill-item i {
+/* Luxury Features Additions */
+
+/* Reading Progress Bar */
+.scroll-progress {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 0%;
+    height: 3px;
+    background: linear-gradient(90deg, var(--accent), #7000FF, #00E5FF);
+    z-index: 1000;
+    transition: width 0.1s ease-out;
+}
+
+/* Status Badge */
+.status-badge {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    background: rgba(16, 185, 129, 0.1);
+    border: 1px solid rgba(16, 185, 129, 0.3);
+    padding: 6px 14px;
+    border-radius: 20px;
+    margin-bottom: 20px;
+}
+
+.status-dot {
+    width: 8px;
+    height: 8px;
+    background-color: #10B981;
+    border-radius: 50%;
+    position: relative;
+    box-shadow: 0 0 10px #10B981;
+}
+
+.status-dot::after {
+    content: '';
+    position: absolute;
+    top: -2px;
+    left: -2px;
+    right: -2px;
+    bottom: -2px;
+    border-radius: 50%;
+    border: 2px solid #10B981;
+    animation: ping 1.8s cubic-bezier(0, 0, 0.2, 1) infinite;
+}
+
+@keyframes ping {
+    75%, 100% {
+        transform: scale(2.2);
+        opacity: 0;
+    }
+}
+
+.status-text {
+    font-size: 13px;
+    font-weight: 500;
+    color: #10B981;
+    font-family: var(--font-mono);
+}
+
+/* Active Nav Link Highlighting */
+.nav-link.active {
     color: var(--accent);
-    font-size: 20px;
+    font-weight: 600;
+}
+
+.nav-link.active::after {
+    width: 100%;
+}
+
+/* Back to Top Floating Button */
+.back-to-top {
+    position: fixed;
+    bottom: 30px;
+    right: 30px;
+    width: 48px;
+    height: 48px;
+    border-radius: 50%;
+    background: rgba(11, 17, 33, 0.8);
+    backdrop-filter: blur(12px);
+    -webkit-backdrop-filter: blur(12px);
+    border: 1px solid var(--accent);
+    color: var(--accent);
+    font-size: 22px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    z-index: 90;
+    opacity: 0;
+    visibility: hidden;
+    transform: translateY(20px);
+    transition: var(--transition);
+    box-shadow: 0 0 20px rgba(0, 229, 255, 0.2);
+}
+
+.back-to-top.show {
+    opacity: 1;
+    visibility: visible;
+    transform: translateY(0);
+}
+
+.back-to-top:hover {
+    background: var(--accent);
+    color: var(--bg-dark);
+    box-shadow: 0 0 25px rgba(0, 229, 255, 0.6);
+    transform: translateY(-4px);
+}
+
+/* Luxury Spotlight Glass Effect on Hover */
+.glass-panel {
+    position: relative;
+    background: var(--glass-bg);
+    border: 1px solid var(--glass-border);
+    backdrop-filter: blur(16px);
+    -webkit-backdrop-filter: blur(16px);
+    box-shadow: var(--glass-shadow);
+    border-radius: 16px;
+    transition: var(--transition);
+}
+
+.glass-panel:hover {
+    border-color: var(--glass-border-hover);
+    box-shadow: 0 12px 40px 0 rgba(0, 229, 255, 0.08);
 }

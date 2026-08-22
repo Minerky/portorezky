@@ -102,6 +102,55 @@ document.addEventListener('DOMContentLoaded', () => {
         });
     });
 
+    // Reading Progress Bar & Back to Top & ScrollSpy
+    const progressBar = document.getElementById('scrollProgress');
+    const backToTopBtn = document.getElementById('backToTop');
+    const navLinks = document.querySelectorAll('.nav-link');
+    const sections = document.querySelectorAll('section[id]');
+
+    window.addEventListener('scroll', () => {
+        const winScroll = document.documentElement.scrollTop || document.body.scrollTop;
+        const height = document.documentElement.scrollHeight - document.documentElement.clientHeight;
+        const scrolled = (winScroll / height) * 100;
+        
+        if (progressBar) {
+            progressBar.style.width = scrolled + '%';
+        }
+
+        // Back to top visibility
+        if (winScroll > 400) {
+            backToTopBtn.classList.add('show');
+        } else {
+            backToTopBtn.classList.remove('show');
+        }
+
+        // ScrollSpy Navigation
+        let currentSection = '';
+        sections.forEach(section => {
+            const sectionTop = section.offsetTop - 120;
+            const sectionHeight = section.clientHeight;
+            if (winScroll >= sectionTop && winScroll < sectionTop + sectionHeight) {
+                currentSection = section.getAttribute('id');
+            }
+        });
+
+        navLinks.forEach(link => {
+            link.classList.remove('active');
+            if (link.getAttribute('href') === `#${currentSection}`) {
+                link.classList.add('active');
+            }
+        });
+    });
+
+    if (backToTopBtn) {
+        backToTopBtn.addEventListener('click', () => {
+            window.scrollTo({
+                top: 0,
+                behavior: 'smooth'
+            });
+        });
+    }
+
     // Initial Trigger for Hero Section
     setTimeout(() => {
         const hero = document.querySelector('.hero');
