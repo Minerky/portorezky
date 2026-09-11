@@ -180,7 +180,8 @@ document.addEventListener('DOMContentLoaded', () => {
     let pdfDoc = null;
     let pdfCurrentPage = 1;
     let pdfTotalPages = 1;
-    let pdfScale = 1.35;
+    let pdfScale = 1.0;
+    let baseFitScale = 1.0;
     let pdfRendering = false;
     let pdfPagePending = null;
     let currentRenderTask = null;
@@ -236,7 +237,7 @@ document.addEventListener('DOMContentLoaded', () => {
         });
 
         if (pdfPageNum) pdfPageNum.textContent = num;
-        if (pdfZoomVal) pdfZoomVal.textContent = Math.round((pdfScale / 1.35) * 100) + '%';
+        if (pdfZoomVal) pdfZoomVal.textContent = Math.round((pdfScale / (baseFitScale || 1.0)) * 100) + '%';
         if (pdfPrevBtn) pdfPrevBtn.disabled = num <= 1;
         if (pdfNextBtn) pdfNextBtn.disabled = num >= pdfTotalPages;
     }
@@ -249,16 +250,20 @@ document.addEventListener('DOMContentLoaded', () => {
         }
     }
 
-    function fitPdfWidth() {
+    function fitPdfToView() {
         if (!pdfDoc || !currentCanvas) return;
         pdfDoc.getPage(pdfCurrentPage).then(page => {
             const baseViewport = page.getViewport({ scale: 1.0 });
             const wrapper = document.getElementById('pdfCanvasWrapper') || docModalBody;
-            const containerWidth = (wrapper.clientWidth || docModalBody.clientWidth) - 32;
-            if (containerWidth > 200) {
-                pdfScale = Math.max(0.5, Math.min(2.5, containerWidth / baseViewport.width));
-                renderPdfPage(pdfCurrentPage);
-            }
+            const availWidth = Math.max(200, (wrapper.clientWidth || docModalBody.clientWidth) - 32);
+            const availHeight = Math.max(200, (wrapper.clientHeight || docModalBody.clientHeight) - 32);
+            
+            const scaleX = availWidth / baseViewport.width;
+            const scaleY = availHeight / baseViewport.height;
+            
+            pdfScale = Math.min(scaleX, scaleY);
+            baseFitScale = pdfScale;
+            renderPdfPage(pdfCurrentPage);
         });
     }
 
@@ -291,7 +296,7 @@ document.addEventListener('DOMContentLoaded', () => {
                 currentCanvas.className = 'doc-modal-canvas';
                 wrapper.appendChild(currentCanvas);
 
-                // Detect orientation & auto fit width
+                // Detect orientation & auto fit entire view
                 pdfDoc.getPage(1).then(page => {
                     const baseViewport = page.getViewport({ scale: 1.0 });
                     const isPortrait = baseViewport.height >= baseViewport.width;
@@ -306,8 +311,8 @@ document.addEventListener('DOMContentLoaded', () => {
                     }
 
                     setTimeout(() => {
-                        fitPdfWidth();
-                    }, 60);
+                        fitPdfToView();
+                    }, 80);
                 });
             }
         }).catch(err => {
@@ -401,23 +406,23 @@ document.addEventListener('DOMContentLoaded', () => {
 
     if (pdfZoomInBtn) {
         pdfZoomInBtn.addEventListener('click', () => {
-            if (pdfScale >= 3.0) return;
-            pdfScale += 0.2;
+            if (pdfScale >= 3.5) return;
+            pdfScale *= 1.2;
             queuePdfPage(pdfCurrentPage);
         });
     }
 
     if (pdfZoomOutBtn) {
         pdfZoomOutBtn.addEventListener('click', () => {
-            if (pdfScale <= 0.5) return;
-            pdfScale -= 0.2;
+            if (pdfScale <= 0.3) return;
+            pdfScale *= 0.8;
             queuePdfPage(pdfCurrentPage);
         });
     }
 
     if (pdfFitBtn) {
         pdfFitBtn.addEventListener('click', () => {
-            fitPdfWidth();
+            fitPdfToView();
         });
     }
 
