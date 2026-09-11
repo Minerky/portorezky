@@ -156,4 +156,72 @@ document.addEventListener('DOMContentLoaded', () => {
         const hero = document.querySelector('.hero');
         if (hero) hero.classList.add('is-visible');
     }, 100);
+
+    // Document Lightbox Modal Logic
+    const docModal = document.getElementById('docModal');
+    const docModalOverlay = document.getElementById('docModalOverlay');
+    const docModalClose = document.getElementById('docModalClose');
+    const docModalTitle = document.getElementById('docModalTitle');
+    const docModalExternal = document.getElementById('docModalExternal');
+    const docModalBody = document.getElementById('docModalBody');
+    const viewDocButtons = document.querySelectorAll('.view-doc-btn');
+
+    function openDocModal(src, title, type) {
+        if (!docModal || !src) return;
+        
+        if (docModalTitle) docModalTitle.textContent = title || 'Dokumen';
+        if (docModalExternal) docModalExternal.href = src;
+        if (docModalBody) {
+            docModalBody.innerHTML = '';
+
+            if (type === 'pdf') {
+                const iframe = document.createElement('iframe');
+                iframe.src = src;
+                iframe.className = 'doc-modal-iframe';
+                iframe.title = title || 'Dokumen PDF';
+                docModalBody.appendChild(iframe);
+            } else {
+                const img = document.createElement('img');
+                img.src = src;
+                img.alt = title || 'Dokumen Gambar';
+                img.className = 'doc-modal-image';
+                docModalBody.appendChild(img);
+            }
+        }
+
+        docModal.classList.add('active');
+        docModal.setAttribute('aria-hidden', 'false');
+        document.body.style.overflow = 'hidden';
+    }
+
+    function closeDocModal() {
+        if (!docModal) return;
+        docModal.classList.remove('active');
+        docModal.setAttribute('aria-hidden', 'true');
+        document.body.style.overflow = '';
+        setTimeout(() => {
+            if (docModalBody) docModalBody.innerHTML = '';
+        }, 250);
+    }
+
+    viewDocButtons.forEach(btn => {
+        btn.addEventListener('click', (e) => {
+            e.preventDefault();
+            const src = btn.getAttribute('data-src');
+            const title = btn.getAttribute('data-title');
+            const type = btn.getAttribute('data-type') || (src && src.toLowerCase().endsWith('.pdf') ? 'pdf' : 'image');
+            if (src) {
+                openDocModal(src, title, type);
+            }
+        });
+    });
+
+    if (docModalClose) docModalClose.addEventListener('click', closeDocModal);
+    if (docModalOverlay) docModalOverlay.addEventListener('click', closeDocModal);
+
+    document.addEventListener('keydown', (e) => {
+        if (e.key === 'Escape' && docModal && docModal.classList.contains('active')) {
+            closeDocModal();
+        }
+    });
 });
