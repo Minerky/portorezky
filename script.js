@@ -250,12 +250,13 @@ document.addEventListener('DOMContentLoaded', () => {
     }
 
     function fitPdfWidth() {
-        if (!pdfDoc) return;
+        if (!pdfDoc || !currentCanvas) return;
         pdfDoc.getPage(pdfCurrentPage).then(page => {
             const baseViewport = page.getViewport({ scale: 1.0 });
-            const containerWidth = docModalBody.clientWidth - 48;
-            if (containerWidth > 300) {
-                pdfScale = Math.max(0.6, Math.min(2.5, containerWidth / baseViewport.width));
+            const wrapper = document.getElementById('pdfCanvasWrapper') || docModalBody;
+            const containerWidth = (wrapper.clientWidth || docModalBody.clientWidth) - 32;
+            if (containerWidth > 200) {
+                pdfScale = Math.max(0.5, Math.min(2.5, containerWidth / baseViewport.width));
                 renderPdfPage(pdfCurrentPage);
             }
         });
@@ -290,16 +291,23 @@ document.addEventListener('DOMContentLoaded', () => {
                 currentCanvas.className = 'doc-modal-canvas';
                 wrapper.appendChild(currentCanvas);
 
-                // Auto fit width
+                // Detect orientation & auto fit width
                 pdfDoc.getPage(1).then(page => {
                     const baseViewport = page.getViewport({ scale: 1.0 });
-                    const containerWidth = docModalBody.clientWidth - 48;
-                    if (containerWidth > 300) {
-                        pdfScale = Math.max(0.6, Math.min(2.0, (containerWidth) / baseViewport.width));
-                    } else {
-                        pdfScale = 1.0;
+                    const isPortrait = baseViewport.height >= baseViewport.width;
+                    if (docModalContent) {
+                        if (isPortrait) {
+                            docModalContent.classList.add('is-portrait');
+                            docModalContent.classList.remove('is-landscape');
+                        } else {
+                            docModalContent.classList.add('is-landscape');
+                            docModalContent.classList.remove('is-portrait');
+                        }
                     }
-                    renderPdfPage(1);
+
+                    setTimeout(() => {
+                        fitPdfWidth();
+                    }, 60);
                 });
             }
         }).catch(err => {
@@ -326,9 +334,24 @@ document.addEventListener('DOMContentLoaded', () => {
             if (docModalContent) docModalContent.classList.remove('is-pdf');
             if (pdfControls) pdfControls.style.display = 'none';
             if (docModalBody) {
-                docModalBody.innerHTML = `
-                    <img src="${src}" alt="${title || 'Dokumen Gambar'}" class="doc-modal-image">
-                `;
+                docModalBody.innerHTML = '';
+                const img = document.createElement('img');
+                img.src = src;
+                img.alt = title || 'Dokumen Gambar';
+                img.className = 'doc-modal-image';
+                img.onload = () => {
+                    const isPortrait = img.naturalHeight >= img.naturalWidth;
+                    if (docModalContent) {
+                        if (isPortrait) {
+                            docModalContent.classList.add('is-portrait');
+                            docModalContent.classList.remove('is-landscape');
+                        } else {
+                            docModalContent.classList.add('is-landscape');
+                            docModalContent.classList.remove('is-portrait');
+                        }
+                    }
+                };
+                docModalBody.appendChild(img);
             }
         }
 
@@ -343,7 +366,7 @@ document.addEventListener('DOMContentLoaded', () => {
         docModal.setAttribute('aria-hidden', 'true');
         document.body.style.overflow = '';
         if (docModalContent) {
-            docModalContent.classList.remove('is-pdf');
+            docModalContent.classList.remove('is-pdf', 'is-portrait', 'is-landscape');
         }
         if (pdfControls) {
             pdfControls.style.display = 'none';
