@@ -446,4 +446,53 @@ document.addEventListener('DOMContentLoaded', () => {
             closeDocModal();
         }
     });
+
+    // Click-to-Copy for Contact Info
+    const copyPills = document.querySelectorAll('.copy-pill[data-copy]');
+    const copyToast = document.getElementById('copyToast');
+    const toastMessage = document.getElementById('toastMessage');
+    let toastTimeout = null;
+
+    function showToast(msg) {
+        if (!copyToast) return;
+        if (toastMessage) toastMessage.textContent = msg || 'Teks berhasil disalin!';
+        copyToast.classList.add('show');
+        if (toastTimeout) clearTimeout(toastTimeout);
+        toastTimeout = setTimeout(() => {
+            copyToast.classList.remove('show');
+        }, 2200);
+    }
+
+    function fallbackCopy(text) {
+        const textarea = document.createElement('textarea');
+        textarea.value = text;
+        textarea.style.position = 'fixed';
+        textarea.style.opacity = '0';
+        document.body.appendChild(textarea);
+        textarea.select();
+        try {
+            document.execCommand('copy');
+            showToast(`Disalin: ${text}`);
+        } catch (e) {
+            console.error('Copy fallback failed', e);
+        }
+        document.body.removeChild(textarea);
+    }
+
+    copyPills.forEach(pill => {
+        pill.addEventListener('click', () => {
+            const textToCopy = pill.getAttribute('data-copy');
+            if (!textToCopy) return;
+
+            if (navigator.clipboard && navigator.clipboard.writeText) {
+                navigator.clipboard.writeText(textToCopy).then(() => {
+                    showToast(`Disalin: ${textToCopy}`);
+                }).catch(() => {
+                    fallbackCopy(textToCopy);
+                });
+            } else {
+                fallbackCopy(textToCopy);
+            }
+        });
+    });
 });
