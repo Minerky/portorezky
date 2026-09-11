@@ -157,7 +157,7 @@ document.addEventListener('DOMContentLoaded', () => {
         if (hero) hero.classList.add('is-visible');
     }, 100);
 
-    // Document Lightbox Modal Logic
+    // Document Lightbox Modal Logic with Custom In-House PDF Engine
     const docModal = document.getElementById('docModal');
     const docModalOverlay = document.getElementById('docModalOverlay');
     const docModalContent = document.querySelector('.doc-modal-content');
@@ -165,7 +165,153 @@ document.addEventListener('DOMContentLoaded', () => {
     const docModalTitle = document.getElementById('docModalTitle');
     const docModalExternal = document.getElementById('docModalExternal');
     const docModalBody = document.getElementById('docModalBody');
+    const pdfControls = document.getElementById('pdfControls');
+    const pdfPrevBtn = document.getElementById('pdfPrevBtn');
+    const pdfNextBtn = document.getElementById('pdfNextBtn');
+    const pdfPageNum = document.getElementById('pdfPageNum');
+    const pdfPageCount = document.getElementById('pdfPageCount');
+    const pdfZoomInBtn = document.getElementById('pdfZoomInBtn');
+    const pdfZoomOutBtn = document.getElementById('pdfZoomOutBtn');
+    const pdfZoomVal = document.getElementById('pdfZoomVal');
+    const pdfFitBtn = document.getElementById('pdfFitBtn');
     const viewDocButtons = document.querySelectorAll('.view-doc-btn');
+
+    // PDF.js State Variables
+    let pdfDoc = null;
+    let pdfCurrentPage = 1;
+    let pdfTotalPages = 1;
+    let pdfScale = 1.35;
+    let pdfRendering = false;
+    let pdfPagePending = null;
+    let currentRenderTask = null;
+    let currentCanvas = null;
+
+    if (window.pdfjsLib) {
+        pdfjsLib.GlobalWorkerOptions.workerSrc = 'https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.worker.min.js';
+    }
+
+    function renderPdfPage(num) {
+        if (!pdfDoc || !currentCanvas) return;
+        pdfRendering = true;
+
+        if (currentRenderTask) {
+            currentRenderTask.cancel();
+        }
+
+        pdfDoc.getPage(num).then(page => {
+            const ctx = currentCanvas.getContext('2d');
+            const dpr = window.devicePixelRatio || 1;
+            const viewport = page.getViewport({ scale: pdfScale });
+
+            currentCanvas.height = viewport.height * dpr;
+            currentCanvas.width = viewport.width * dpr;
+            currentCanvas.style.height = viewport.height + 'px';
+            currentCanvas.style.width = viewport.width + 'px';
+
+            ctx.setTransform(1, 0, 0, 1, 0, 0);
+            ctx.scale(dpr, dpr);
+
+            const renderContext = {
+                canvasContext: ctx,
+                viewport: viewport
+            };
+
+            currentRenderTask = page.render(renderContext);
+            currentRenderTask.promise.then(() => {
+                pdfRendering = false;
+                currentRenderTask = null;
+                if (pdfPagePending !== null) {
+                    renderPdfPage(pdfPagePending);
+                    pdfPagePending = null;
+                }
+            }).catch(err => {
+                if (err && err.name !== 'RenderingCancelledException') {
+                    console.error('PDF render error:', err);
+                }
+                pdfRendering = false;
+            });
+        }).catch(err => {
+            console.error('PDF getPage error:', err);
+            pdfRendering = false;
+        });
+
+        if (pdfPageNum) pdfPageNum.textContent = num;
+        if (pdfZoomVal) pdfZoomVal.textContent = Math.round((pdfScale / 1.35) * 100) + '%';
+        if (pdfPrevBtn) pdfPrevBtn.disabled = num <= 1;
+        if (pdfNextBtn) pdfNextBtn.disabled = num >= pdfTotalPages;
+    }
+
+    function queuePdfPage(num) {
+        if (pdfRendering) {
+            pdfPagePending = num;
+        } else {
+            renderPdfPage(num);
+        }
+    }
+
+    function fitPdfWidth() {
+        if (!pdfDoc) return;
+        pdfDoc.getPage(pdfCurrentPage).then(page => {
+            const baseViewport = page.getViewport({ scale: 1.0 });
+            const containerWidth = docModalBody.clientWidth - 48;
+            if (containerWidth > 300) {
+                pdfScale = Math.max(0.6, Math.min(2.5, containerWidth / baseViewport.width));
+                renderPdfPage(pdfCurrentPage);
+            }
+        });
+    }
+
+    function loadCustomPdf(url) {
+        docModalBody.innerHTML = `
+            <div class="pdf-canvas-wrapper" id="pdfCanvasWrapper">
+                <div class="pdf-loading-spinner" id="pdfSpinner">
+                    <i class="ph ph-spinner ph-spin" style="font-size:24px;"></i> Memuat PDF...
+                </div>
+            </div>
+        `;
+
+        if (!window.pdfjsLib) {
+            docModalBody.innerHTML = `<div style="color:var(--text-secondary); padding:40px; text-align:center;">Library PDF viewer sedang disiapkan... Silakan buka via tab baru.</div>`;
+            return;
+        }
+
+        const loadingTask = pdfjsLib.getDocument(url);
+        loadingTask.promise.then(pdf => {
+            pdfDoc = pdf;
+            pdfTotalPages = pdf.numPages;
+            pdfCurrentPage = 1;
+            if (pdfPageCount) pdfPageCount.textContent = pdfTotalPages;
+            if (pdfControls) pdfControls.style.display = 'inline-flex';
+
+            const wrapper = document.getElementById('pdfCanvasWrapper');
+            if (wrapper) {
+                wrapper.innerHTML = '';
+                currentCanvas = document.createElement('canvas');
+                currentCanvas.className = 'doc-modal-canvas';
+                wrapper.appendChild(currentCanvas);
+
+                // Auto fit width
+                pdfDoc.getPage(1).then(page => {
+                    const baseViewport = page.getViewport({ scale: 1.0 });
+                    const containerWidth = docModalBody.clientWidth - 48;
+                    if (containerWidth > 300) {
+                        pdfScale = Math.max(0.6, Math.min(2.0, (containerWidth) / baseViewport.width));
+                    } else {
+                        pdfScale = 1.0;
+                    }
+                    renderPdfPage(1);
+                });
+            }
+        }).catch(err => {
+            console.error('Failed to load PDF: ', err);
+            docModalBody.innerHTML = `
+                <div style="color:#ff5252; padding:40px; text-align:center; font-family:var(--font-heading);">
+                    Gagal memuat PDF ke dalam canvas viewer.<br>
+                    <a href="${url}" target="_blank" style="color:var(--accent); text-decoration:underline; display:inline-block; margin-top:10px;">Buka file asli di tab baru</a>
+                </div>
+            `;
+        });
+    }
 
     function openDocModal(src, title, type) {
         if (!docModal || !src) return;
@@ -173,29 +319,16 @@ document.addEventListener('DOMContentLoaded', () => {
         if (docModalTitle) docModalTitle.textContent = title || 'Dokumen';
         if (docModalExternal) docModalExternal.href = src;
         
-        if (docModalContent) {
-            if (type === 'pdf') {
-                docModalContent.classList.add('is-pdf');
-            } else {
-                docModalContent.classList.remove('is-pdf');
-            }
-        }
-
-        if (docModalBody) {
-            docModalBody.innerHTML = '';
-
-            if (type === 'pdf') {
-                const iframe = document.createElement('iframe');
-                iframe.src = src;
-                iframe.className = 'doc-modal-iframe';
-                iframe.title = title || 'Dokumen PDF';
-                docModalBody.appendChild(iframe);
-            } else {
-                const img = document.createElement('img');
-                img.src = src;
-                img.alt = title || 'Dokumen Gambar';
-                img.className = 'doc-modal-image';
-                docModalBody.appendChild(img);
+        if (type === 'pdf') {
+            if (docModalContent) docModalContent.classList.add('is-pdf');
+            loadCustomPdf(src);
+        } else {
+            if (docModalContent) docModalContent.classList.remove('is-pdf');
+            if (pdfControls) pdfControls.style.display = 'none';
+            if (docModalBody) {
+                docModalBody.innerHTML = `
+                    <img src="${src}" alt="${title || 'Dokumen Gambar'}" class="doc-modal-image">
+                `;
             }
         }
 
@@ -212,9 +345,57 @@ document.addEventListener('DOMContentLoaded', () => {
         if (docModalContent) {
             docModalContent.classList.remove('is-pdf');
         }
+        if (pdfControls) {
+            pdfControls.style.display = 'none';
+        }
+        if (currentRenderTask) {
+            currentRenderTask.cancel();
+            currentRenderTask = null;
+        }
+        pdfDoc = null;
+        currentCanvas = null;
         setTimeout(() => {
             if (docModalBody) docModalBody.innerHTML = '';
         }, 250);
+    }
+
+    // PDF Controls Event Listeners
+    if (pdfPrevBtn) {
+        pdfPrevBtn.addEventListener('click', () => {
+            if (pdfCurrentPage <= 1) return;
+            pdfCurrentPage--;
+            queuePdfPage(pdfCurrentPage);
+        });
+    }
+
+    if (pdfNextBtn) {
+        pdfNextBtn.addEventListener('click', () => {
+            if (!pdfDoc || pdfCurrentPage >= pdfTotalPages) return;
+            pdfCurrentPage++;
+            queuePdfPage(pdfCurrentPage);
+        });
+    }
+
+    if (pdfZoomInBtn) {
+        pdfZoomInBtn.addEventListener('click', () => {
+            if (pdfScale >= 3.0) return;
+            pdfScale += 0.2;
+            queuePdfPage(pdfCurrentPage);
+        });
+    }
+
+    if (pdfZoomOutBtn) {
+        pdfZoomOutBtn.addEventListener('click', () => {
+            if (pdfScale <= 0.5) return;
+            pdfScale -= 0.2;
+            queuePdfPage(pdfCurrentPage);
+        });
+    }
+
+    if (pdfFitBtn) {
+        pdfFitBtn.addEventListener('click', () => {
+            fitPdfWidth();
+        });
     }
 
     viewDocButtons.forEach(btn => {

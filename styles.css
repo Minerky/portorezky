@@ -1337,14 +1337,61 @@ footer {
     padding: 0;
     height: calc(94vh - 65px);
     max-height: calc(94vh - 65px);
-    background: #1e1e1e;
+    background: #070a14;
+    overflow: auto;
 }
 
-.doc-modal-content.is-pdf .doc-modal-iframe {
+.pdf-controls {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+}
+
+.pdf-divider {
+    width: 1px;
+    height: 22px;
+    background: var(--glass-border);
+    margin: 0 4px;
+}
+
+.pdf-page-indicator,
+.pdf-zoom-indicator {
+    font-family: var(--font-mono);
+    font-size: 13px;
+    color: var(--text-secondary);
+    padding: 0 6px;
+    user-select: none;
+    white-space: nowrap;
+}
+
+.pdf-canvas-wrapper {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: flex-start;
     width: 100%;
-    height: 100%;
-    border-radius: 0 0 16px 16px;
-    background: #2b2b2b;
+    min-height: 100%;
+    padding: 24px 16px;
+    overflow: auto;
+    position: relative;
+    background: #070a14;
+}
+
+.doc-modal-canvas {
+    max-width: 100%;
+    border-radius: 6px;
+    box-shadow: 0 12px 40px rgba(0, 0, 0, 0.7);
+    border: 1px solid var(--glass-border);
+}
+
+.pdf-loading-spinner {
+    color: var(--accent);
+    font-family: var(--font-heading);
+    font-size: 15px;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    padding: 40px;
 }
 
 .doc-modal-image {
@@ -1356,17 +1403,9 @@ footer {
     border: 1px solid var(--glass-border);
 }
 
-.doc-modal-iframe {
-    width: 100%;
-    height: 75vh;
-    border: none;
-    border-radius: 8px;
-    background: #fff;
-}
-
 @media (max-width: 768px) {
     .doc-modal {
-        padding: 8px;
+        padding: 6px;
     }
     .doc-modal-content {
         max-height: 96vh;
@@ -1379,20 +1418,35 @@ footer {
         border-radius: 12px;
     }
     .doc-modal-header {
-        padding: 12px 16px;
+        padding: 10px 14px;
+        flex-wrap: wrap;
+        gap: 8px;
+    }
+    .pdf-controls {
+        gap: 4px;
+    }
+    .pdf-page-indicator,
+    .pdf-zoom-indicator {
+        font-size: 11.5px;
+        padding: 0 2px;
+    }
+    .doc-modal-btn {
+        width: 32px;
+        height: 32px;
+        font-size: 16px;
     }
     .doc-modal-body {
-        padding: 12px;
+        padding: 10px;
         max-height: calc(96vh - 60px);
     }
     .doc-modal-content.is-pdf .doc-modal-body {
         padding: 0;
         max-height: calc(96vh - 60px);
     }
+    .pdf-canvas-wrapper {
+        padding: 12px 6px;
+    }
     .doc-modal-image {
         max-height: 75vh;
-    }
-    .doc-modal-iframe {
-        height: 100%;
     }
 }

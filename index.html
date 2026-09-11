@@ -507,7 +507,30 @@
                     <h4 class="doc-modal-title" id="docModalTitle">Dokumen</h4>
                 </div>
                 <div class="doc-modal-actions">
-                    <a href="#" id="docModalExternal" target="_blank" class="doc-modal-btn" title="Buka di tab baru" aria-label="Buka di tab baru">
+                    <div class="pdf-controls" id="pdfControls" style="display: none;">
+                        <button type="button" class="doc-modal-btn" id="pdfPrevBtn" title="Halaman Sebelumnya" aria-label="Halaman Sebelumnya">
+                            <i class="ph ph-caret-left"></i>
+                        </button>
+                        <span class="pdf-page-indicator">
+                            <span id="pdfPageNum">1</span> / <span id="pdfPageCount">1</span>
+                        </span>
+                        <button type="button" class="doc-modal-btn" id="pdfNextBtn" title="Halaman Selanjutnya" aria-label="Halaman Selanjutnya">
+                            <i class="ph ph-caret-right"></i>
+                        </button>
+                        <div class="pdf-divider"></div>
+                        <button type="button" class="doc-modal-btn" id="pdfZoomOutBtn" title="Perkecil" aria-label="Perkecil">
+                            <i class="ph ph-minus"></i>
+                        </button>
+                        <span class="pdf-zoom-indicator" id="pdfZoomVal">100%</span>
+                        <button type="button" class="doc-modal-btn" id="pdfZoomInBtn" title="Perbesar" aria-label="Perbesar">
+                            <i class="ph ph-plus"></i>
+                        </button>
+                        <button type="button" class="doc-modal-btn" id="pdfFitBtn" title="Sesuaikan Layar" aria-label="Sesuaikan Layar">
+                            <i class="ph ph-arrows-out-simple"></i>
+                        </button>
+                        <div class="pdf-divider"></div>
+                    </div>
+                    <a href="#" id="docModalExternal" target="_blank" class="doc-modal-btn" title="Unduh / Buka File Asli" aria-label="Unduh atau Buka File Asli">
                         <i class="ph ph-arrow-square-out"></i>
                     </a>
                     <button type="button" class="doc-modal-btn doc-modal-close" id="docModalClose" aria-label="Tutup popup">
@@ -521,6 +544,8 @@
         </div>
     </div>
 
+    <!-- PDF.js Engine -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.min.js"></script>
     <script src="script.js"></script>
 </body>
 
