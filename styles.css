@@ -1269,6 +1269,8 @@ footer {
     padding: 14px 20px;
     border-bottom: 1px solid var(--glass-border);
     background: rgba(14, 20, 36, 0.7);
+    flex-shrink: 0;
+    width: 100%;
 }
 
 .doc-modal-title-wrap {
@@ -1276,6 +1278,8 @@ footer {
     align-items: center;
     gap: 10px;
     min-width: 0;
+    flex: 1;
+    margin-right: 10px;
 }
 
 .doc-modal-icon {
@@ -1300,6 +1304,17 @@ footer {
     align-items: center;
     gap: 8px;
     flex-shrink: 0;
+}
+
+.pdf-toolbar-bar {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 8px 16px;
+    background: rgba(8, 12, 24, 0.92);
+    border-bottom: 1px solid var(--glass-border);
+    flex-shrink: 0;
+    width: 100%;
 }
 
 .doc-modal-btn {
@@ -1546,21 +1561,33 @@ footer {
     }
     .doc-modal-header {
         padding: 10px 14px;
-        flex-wrap: wrap;
+        flex-wrap: nowrap;
         gap: 8px;
+    }
+    .doc-modal-actions {
+        flex-shrink: 0;
+        gap: 6px;
+    }
+    .doc-modal-title {
+        font-size: 14px;
+    }
+    .pdf-toolbar-bar {
+        padding: 6px 10px;
+        overflow-x: auto;
     }
     .pdf-controls {
         gap: 4px;
     }
     .pdf-page-indicator,
     .pdf-zoom-indicator {
-        font-size: 11.5px;
-        padding: 0 2px;
+        font-size: 11px;
+        padding: 0 3px;
     }
     .doc-modal-btn {
         width: 32px;
         height: 32px;
         font-size: 16px;
+        border-radius: 6px;
     }
     .doc-modal-body {
         padding: 10px;
@@ -1568,7 +1595,7 @@ footer {
     }
     .doc-modal-content.is-pdf .doc-modal-body {
         padding: 0;
-        max-height: calc(96vh - 60px);
+        max-height: calc(96vh - 100px);
     }
     .pdf-canvas-wrapper {
         padding: 12px 6px;

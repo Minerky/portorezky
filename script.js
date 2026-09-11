@@ -287,7 +287,7 @@ document.addEventListener('DOMContentLoaded', () => {
             pdfTotalPages = pdf.numPages;
             pdfCurrentPage = 1;
             if (pdfPageCount) pdfPageCount.textContent = pdfTotalPages;
-            if (pdfControls) pdfControls.style.display = 'inline-flex';
+            if (pdfControls) pdfControls.style.display = 'flex';
 
             const wrapper = document.getElementById('pdfCanvasWrapper');
             if (wrapper) {
