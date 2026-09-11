@@ -201,16 +201,14 @@ document.addEventListener('DOMContentLoaded', () => {
 
         pdfDoc.getPage(num).then(page => {
             const ctx = currentCanvas.getContext('2d');
-            const dpr = window.devicePixelRatio || 1;
-            const viewport = page.getViewport({ scale: pdfScale });
+            // Supersample at least 2x (or device pixel ratio) for razor-sharp vector text rendering
+            const dpr = Math.max(window.devicePixelRatio || 1, 2);
+            const viewport = page.getViewport({ scale: pdfScale * dpr });
 
-            currentCanvas.height = viewport.height * dpr;
-            currentCanvas.width = viewport.width * dpr;
-            currentCanvas.style.height = viewport.height + 'px';
-            currentCanvas.style.width = viewport.width + 'px';
-
-            ctx.setTransform(1, 0, 0, 1, 0, 0);
-            ctx.scale(dpr, dpr);
+            currentCanvas.height = Math.round(viewport.height);
+            currentCanvas.width = Math.round(viewport.width);
+            currentCanvas.style.height = Math.round(viewport.height / dpr) + 'px';
+            currentCanvas.style.width = Math.round(viewport.width / dpr) + 'px';
 
             const renderContext = {
                 canvasContext: ctx,
@@ -258,10 +256,17 @@ document.addEventListener('DOMContentLoaded', () => {
             const availWidth = Math.max(200, (wrapper.clientWidth || docModalBody.clientWidth) - 32);
             const availHeight = Math.max(200, (wrapper.clientHeight || docModalBody.clientHeight) - 32);
             
+            const isPortrait = baseViewport.height > baseViewport.width;
             const scaleX = availWidth / baseViewport.width;
             const scaleY = availHeight / baseViewport.height;
             
-            pdfScale = Math.min(scaleX, scaleY);
+            if (isPortrait) {
+                // Dokumen portrait (seperti CV) disesuaikan dengan lebar baca nyaman (maksimum 1.35x)
+                pdfScale = Math.min(scaleX, 1.35);
+            } else {
+                // Sertifikat landscape disesuaikan dengan layar
+                pdfScale = Math.min(scaleX, scaleY);
+            }
             baseFitScale = pdfScale;
             renderPdfPage(pdfCurrentPage);
         });
