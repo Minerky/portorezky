@@ -160,6 +160,7 @@ document.addEventListener('DOMContentLoaded', () => {
     // Document Lightbox Modal Logic
     const docModal = document.getElementById('docModal');
     const docModalOverlay = document.getElementById('docModalOverlay');
+    const docModalContent = document.querySelector('.doc-modal-content');
     const docModalClose = document.getElementById('docModalClose');
     const docModalTitle = document.getElementById('docModalTitle');
     const docModalExternal = document.getElementById('docModalExternal');
@@ -171,6 +172,15 @@ document.addEventListener('DOMContentLoaded', () => {
         
         if (docModalTitle) docModalTitle.textContent = title || 'Dokumen';
         if (docModalExternal) docModalExternal.href = src;
+        
+        if (docModalContent) {
+            if (type === 'pdf') {
+                docModalContent.classList.add('is-pdf');
+            } else {
+                docModalContent.classList.remove('is-pdf');
+            }
+        }
+
         if (docModalBody) {
             docModalBody.innerHTML = '';
 
@@ -199,6 +209,9 @@ document.addEventListener('DOMContentLoaded', () => {
         docModal.classList.remove('active');
         docModal.setAttribute('aria-hidden', 'true');
         document.body.style.overflow = '';
+        if (docModalContent) {
+            docModalContent.classList.remove('is-pdf');
+        }
         setTimeout(() => {
             if (docModalBody) docModalBody.innerHTML = '';
         }, 250);
